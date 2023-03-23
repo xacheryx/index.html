@@ -1,0 +1,218 @@
+<html lang="en">
+  <head>
+    <script>
+      var cotorra = `Jag tror att du är med i den här videon
+Är du.? 🙄
+      
+`;
+    </script>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HALADERA</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-U1DAWAznBHeqEIlVSCgzq+c9gqGAJn5c/t99JyeKa9xxaYpSvHU5awsuZVVFIhvj" crossorigin="anonymous"></script>
+    <style>
+    </style>
+  <link rel="me" href="https://www.blogger.com/profile/10448896336350910985" />
+<meta name='google-adsense-platform-account' content='ca-host-pub-1556223355139109'/>
+<meta name='google-adsense-platform-domain' content='blogspot.com'/>
+<link rel="me" href="https://www.blogger.com/profile/13046795183326296667" />
+<meta name='google-adsense-platform-account' content='ca-host-pub-1556223355139109'/>
+<meta name='google-adsense-platform-domain' content='blogspot.com'/>
+<link rel="me" href="https://www.blogger.com/profile/13046795183326296667" />
+<meta name='google-adsense-platform-account' content='ca-host-pub-1556223355139109'/>
+<meta name='google-adsense-platform-domain' content='blogspot.com'/>
+</head>
+  <body>
+    <div class="container">
+      <div class="row">
+        <div class="col">
+          
+          <div>
+            <h1>Usuario</h1>
+            <br />
+            <p>Selecciona un archivo antes de empezar: <input type="file" name="file" id="file">
+              <br /><br />
+            <select class="form-select" id="country" aria-label="Default select example">
+              <option selected>Selecciona un pais antes de empezar</option>
+              <option value="Mexico">Mexico</option>
+              <option value="United States">United States</option>
+            </select>
+            <br />
+            <h1>Perfiles Consumidos: <strong id="counterprofiles">0</strong></h1>
+            <br />
+            <p>Usuario: <strong id="Usuario">Usuario</strong></p>
+            <button id="cuser" class="btn btn-dark">Copiar usuario</button>
+      
+            <p>Contraseña: <strong id="Password">Contraseña</strong></p>
+            <button id="cpass" class="btn btn-dark">Copiar contraseña</button>
+            <br />
+            <br />
+            <button id="clink" class="btn btn-dark">Copiar link</button>
+            <br />
+            <br />
+            <button id="nombre" class="btn btn-dark">Ute Schwarz</button>
+            
+          </div>
+          <br />
+          <div>
+            <h1>Link</h1>
+            <br /><br />
+            <p>Link: <strong id="Link">link</strong></p>
+              
+            <p>Cantidad: <strong id="CantidadLink">pila de link</strong></p>
+          </div>
+    
+        </div>
+        <div class="col">
+          <h1>Perfiles usados</h1>
+          <table class="table table-dark table-striped table-hover">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Usuario</th>
+                <th scope="col">Contraseña</th>
+              </tr>
+            </thead>
+            <tbody id="listprofiles">
+              
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      var profiles = [];
+      var links = [];
+      var counter =0;
+      document.getElementById('file').onchange = function(){
+
+        var file = this.files[0];
+
+        var reader = new FileReader();
+        reader.onload = function(progressEvent){
+          // Entire file
+          console.log(this.result);
+
+          // By lines
+          var lines = this.result.split('\n');
+          console.log(lines);
+          links = lines;
+        };
+        reader.readAsText(file);
+      };
+      var Usuario = document.getElementById("Usuario").innerText;
+      var Password = document.getElementById("Password").innerText;
+
+      document
+        .getElementById("nombre")
+        .addEventListener("click", function (params) {
+          var text = "Ute Schwarz";
+
+          var type = "text/plain";
+          var blob = new Blob([text], { type });
+          var data = [new ClipboardItem({ [type]: blob })];
+
+          navigator.clipboard.write(data).then(
+            function () {
+              /* success */
+            },
+            function () {
+              /* failure */
+            }
+          );
+        });
+      
+        document
+        .getElementById("cpass")
+        .addEventListener("click", function (params) {
+          var text = document.getElementById("Password").innerText;
+
+          var type = "text/plain";
+          var blob = new Blob([text], { type });
+          var data = [new ClipboardItem({ [type]: blob })];
+
+          navigator.clipboard.write(data).then(
+            function () {
+              /* success */
+            },
+            function () {
+              /* failure */
+            }
+          );
+          function getprofile() {
+            var xhr2 = new XMLHttpRequest();
+            xhr2.addEventListener("load", () => {
+              if (xhr2.status === 200) {
+                var perfil = JSON.parse(xhr2.responseText);
+                document.getElementById("Usuario").innerText = perfil.user;
+                document.getElementById("Password").innerText = perfil.pass;
+                
+                profiles.push({
+                  user: perfil.user,
+                  pass: perfil.pass
+                });
+                document.getElementById('counterprofiles').innerHTML = profiles.length
+                document.getElementById('listprofiles').innerHTML += `<tr>
+                      <th scope="row">`+profiles.length+`</th>
+                      <td>`+perfil.user+`</td>
+                      <td>`+perfil.pass+`</td>
+                    </tr>`;
+              }
+            });
+
+            xhr2.open(
+              "GET",
+              "https://blacksar.in/api/json/tools.php?token=a081a62c&country="+ document.getElementById('country').value
+            );
+            
+            
+
+
+            xhr2.send();
+          }
+          getprofile();
+        });
+      document
+        .getElementById("cuser")
+        .addEventListener("click", function (params) {
+          var text = document.getElementById("Usuario").innerText;
+          document.getElementById("CantidadLink").innerText = links.length
+          
+
+          var type = "text/plain";
+          var blob = new Blob([text], { type });
+          var data = [new ClipboardItem({ [type]: blob })];
+
+          navigator.clipboard.write(data).then(
+            function () {
+              /* success */
+            },
+            function () {
+              /* failure */
+            }
+          );
+        });
+      document
+        .getElementById("clink")
+        .addEventListener("click", function (params) {
+          document.getElementById("Link").innerText = links[counter]
+          var text = document.getElementById("Link").innerText;
+          var type = "text/plain";
+          var blob = new Blob([cotorra+ text], { type });
+          var data = [new ClipboardItem({ [type]: blob })];
+          navigator.clipboard.write(data).then(
+            function () {
+              counter ++;
+            },
+            function () {
+              /* failure */
+            }
+          );
+
+        });
+    </script>
+  </body>
+</html>
